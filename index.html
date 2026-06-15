@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0a0010">
 <meta name="color-scheme" content="dark">
-<title>Happy Birthday, Em Yêu 🌸</title>
+<title>Happy Birthday, vợ yêu 🌸</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Dancing+Script:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -17,7 +17,8 @@
 }
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html { scroll-behavior:smooth; }
-body { background:var(--bg); color:#fff; font-family:'Cormorant Garamond',serif; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+body { background:var(--bg); color:#fff; font-family:'Cormorant Garamond',serif; overflow-x:hidden; -webkit-font-smoothing:antialiased; scrollbar-width:none; -ms-overflow-style:none; }
+body::-webkit-scrollbar { display:none; }
 canvas#bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; }
 
 /* Reduced motion: tắt animation cho người dùng nhạy cảm */
@@ -85,7 +86,7 @@ canvas#bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; p
 .seal { font-size:2.5rem; }
 .card-label { font-size:0.8rem; letter-spacing:0.2em; padding-left:0.2em; color:var(--pink-lt); margin-top:0.5rem; white-space:nowrap; }
 .card-tap { font-size:1rem; color:var(--gold-lt); margin-top:0.5rem; animation:gentlePulse 2s ease-in-out infinite; }
-.card-back-label { font-size:0.7rem; letter-spacing:0.4em; padding-left:0.4em; color:var(--pink-lt); text-transform:uppercase; margin-bottom:1rem; }
+.card-back-label { font-size:0.7rem; letter-spacing:0.25em; padding-left:0.25em; color:var(--pink-lt); text-transform:uppercase; margin-bottom:1rem; white-space:nowrap; }
 .card-back-name {
   font-family:'Playfair Display',serif; font-style:italic; font-size:2.5rem; font-weight:700;
   background:linear-gradient(135deg,var(--gold),var(--pink),var(--gold)); background-size:200% auto;
@@ -141,10 +142,10 @@ canvas#bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; p
 .stars-counter { font-size:1rem; color:var(--gold); margin-bottom:1.2rem; }
 .stars-counter span { font-size:1.5rem; font-weight:700; }
 
-.stars-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; max-width:340px; }
-@media(max-width:360px){ .stars-grid { grid-template-columns:repeat(3,1fr); } }
+.stars-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; width:100%; max-width:420px; }
+@media(max-width:420px){ .stars-grid { max-width:320px; grid-template-columns:repeat(3,1fr); } }
 .star-card { aspect-ratio:1; cursor:pointer; }
-.star-card:last-child { grid-column:1/-1; width:85px; justify-self:center; }
+.star-card:last-child { grid-column:2/4; justify-self:center; width:100%; max-width:100px; }
 
 .star-card-inner { width:100%; height:100%; position:relative; }
 .star-front,.star-back {
@@ -291,7 +292,7 @@ canvas#bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; p
 
 /* Constellation */
 #constellationSection { min-height:50vh; min-height:50dvh; position:relative; z-index:10; }
-#constellationCanvas { width:100%; height:200px; display:block; max-width:400px; margin:1rem auto 0; }
+#constellationCanvas { width:100%; height:260px; display:block; max-width:440px; margin:1rem auto 0; }
 .constellation-label { font-size:0.8rem; color:var(--pink-lt); letter-spacing:0.25em; }
 
 /* Balloons */
@@ -342,7 +343,7 @@ canvas#bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; p
       </div>
       <div class="card-face card-back">
         <p class="card-back-label">✦ happy birthday ✦</p>
-        <h2 class="card-back-name">Em Yêu</h2>
+        <h2 class="card-back-name">vợ yêu</h2>
         <p class="card-back-emoji">🌸</p>
       </div>
     </div>
@@ -353,7 +354,7 @@ canvas#bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; p
 <main id="mainContent" class="hidden">
   <section id="intro" class="section">
     <p class="intro-sub">✦ Một lá thư từ bầu trời sao ✦</p>
-    <h1 class="intro-title">Happy Birthday,<br>Em Yêu</h1>
+    <h1 class="intro-title">Happy Birthday,<br>vợ yêu</h1>
     <p class="intro-desc">Trên bầu trời này có 17 ngôi sao.<br>Mỗi ngôi sao giữ một điều anh yêu về em.</p>
     <div class="scroll-hint"><span>Cuộn xuống</span><div class="scroll-line"></div></div>
   </section>
@@ -380,7 +381,7 @@ canvas#bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; p
 
   <section id="letterSection" class="section">
     <div class="letter-paper">
-      <p class="letter-date">Ngày 05.06.2026</p>
+      <p class="letter-date">Ngày 17.06.2026</p>
       <div class="letter-body" id="letterBody"></div>
       <p class="letter-sign" id="letterSign">— Anh ❤️</p>
     </div>
@@ -416,8 +417,8 @@ canvas#bgCanvas { position:fixed; inset:0; width:100%; height:100%; z-index:0; p
     <canvas id="fireworksCanvas"></canvas>
     <div class="finale-content">
       <p class="finale-label fade-in-up">✦ sinh nhật hạnh phúc ✦</p>
-      <h2 class="finale-name fade-in-up">Em Yêu</h2>
-      <p class="finale-wish fade-in-up">Chúc em một năm mới thật nhiều niềm vui,<br>sức khỏe và những điều tốt đẹp nhất.<br>Anh yêu em — hôm nay, ngày mai, và mãi mãi.</p>
+      <h2 class="finale-name fade-in-up">vợ yêu</h2>
+      <p class="finale-wish fade-in-up">Chúc em một tuổi mới thật nhiều niềm vui,<br>sức khỏe và những điều tốt đẹp nhất.<br>Anh yêu em — hôm nay, ngày mai, và mãi mãi.</p>
       <p class="finale-sign fade-in-up">— Của anh, với tất cả tình yêu 💛</p>
     </div>
   </section>

@@ -4,7 +4,7 @@
 
 // ===== CONFIGURATION (THAY ĐỔI TẠI ĐÂY) =====
 const CONFIG = {
-  name: "Em Yêu",
+  name: "vợ yêu",
   signature: "— Của anh, với tất cả tình yêu 💛",
   candleCount: 5,
   reasons: [
@@ -65,6 +65,84 @@ const state = {
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const wait = ms => new Promise(r => setTimeout(r, ms));
+
+// ===== SOUND EFFECTS =====
+function ensureAudioCtx() {
+  if (!state.audioCtx) state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
+  return state.audioCtx;
+}
+
+function playStarSound() {
+  const ac = ensureAudioCtx();
+  const t = ac.currentTime;
+  // Gentle sparkle chime — two layered sine tones
+  [880, 1318].forEach((freq, i) => {
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, t + i * 0.06);
+    gain.gain.linearRampToValueAtTime(0.09, t + i * 0.06 + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.06 + 0.35);
+    osc.connect(gain);
+    gain.connect(ac.destination);
+    osc.start(t + i * 0.06);
+    osc.stop(t + i * 0.06 + 0.4);
+  });
+}
+
+function playTypeSound() {
+  const ac = ensureAudioCtx();
+  const t = ac.currentTime;
+  // Tiny soft click — short noise tick
+  const len = Math.round(ac.sampleRate * 0.018);
+  const buf = ac.createBuffer(1, len, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 6);
+  }
+  const src = ac.createBufferSource();
+  src.buffer = buf;
+  const hp = ac.createBiquadFilter();
+  hp.type = 'highpass'; hp.frequency.value = 2000;
+  const g = ac.createGain();
+  g.gain.setValueAtTime(0.04 + Math.random() * 0.03, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + 0.015);
+  src.connect(hp); hp.connect(g); g.connect(ac.destination);
+  src.start(t); src.stop(t + 0.02);
+}
+
+function playPopSound() {
+  const ac = ensureAudioCtx();
+  const t = ac.currentTime;
+  // Soft pop — filtered noise burst + low thump
+  const len = Math.round(ac.sampleRate * 0.12);
+  const buf = ac.createBuffer(1, len, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < len; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 4);
+  }
+  const noise = ac.createBufferSource();
+  noise.buffer = buf;
+  const bp = ac.createBiquadFilter();
+  bp.type = 'bandpass'; bp.frequency.value = 900; bp.Q.value = 0.8;
+  const g1 = ac.createGain();
+  g1.gain.setValueAtTime(0.18, t);
+  g1.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+  noise.connect(bp); bp.connect(g1); g1.connect(ac.destination);
+  noise.start(t); noise.stop(t + 0.12);
+  // Low thump layer
+  const osc = ac.createOscillator();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(160, t);
+  osc.frequency.exponentialRampToValueAtTime(60, t + 0.08);
+  const g2 = ac.createGain();
+  g2.gain.setValueAtTime(0.12, t);
+  g2.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+  osc.connect(g2); g2.connect(ac.destination);
+  osc.start(t); osc.stop(t + 0.12);
+}
 
 // ===== CENTRAL ANIMATION LOOP =====
 // FIX: Gộp 4 vòng rAF riêng lẻ thành 1 vòng duy nhất
@@ -224,6 +302,7 @@ function initStars() {
       } else {
         card.classList.add('revealed');
         state.starsRevealed.add(i);
+        playStarSound();
       }
       const count = state.starsRevealed.size;
       counterEl.textContent = count;
@@ -269,6 +348,7 @@ async function typeLetter() {
     }
     for (const char of line) {
       cursor.before(document.createTextNode(char));
+      playTypeSound();
       let d = 35 + Math.random() * 30;
       if (',.:'.includes(char)) d = 180 + Math.random() * 80;
       if (char === '—') d = 120;
@@ -567,7 +647,7 @@ function initConstellation() {
 
   function resize() {
     W = canvas.width = canvas.offsetWidth;
-    H = canvas.height = 200;
+    H = canvas.height = 260;
   }
 
   function sampleText() {
@@ -575,17 +655,17 @@ function initConstellation() {
     tmp.width = W; tmp.height = H;
     const tctx = tmp.getContext('2d');
     tctx.fillStyle = '#fff';
-    const fs = Math.min(55, W * 0.14);
+    const fs = Math.min(90, W * 0.22);
     tctx.font = `italic 700 ${fs}px "Playfair Display", serif`;
     tctx.textAlign = 'center'; tctx.textBaseline = 'middle';
     tctx.fillText(CONFIG.name, W / 2, H / 2);
     const data = tctx.getImageData(0, 0, W, H).data;
     const pts = [];
-    const step = Math.max(4, Math.floor(W / 65));
+    const step = Math.max(3, Math.floor(W / 110));
     for (let y = 0; y < H; y += step) {
       for (let x = 0; x < W; x += step) {
         if (data[(y * W + x) * 4 + 3] > 128) {
-          pts.push({ x, y, size: 0.6 + Math.random() * 1.3, phase: Math.random() * Math.PI * 2, delay: x / W });
+          pts.push({ x, y, size: 0.8 + Math.random() * 1.6, phase: Math.random() * Math.PI * 2, delay: x / W });
         }
       }
     }
@@ -606,9 +686,9 @@ function initConstellation() {
       ctx.globalAlpha = alpha * tw;
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(251,191,36,0.06)';
-      ctx.globalAlpha = alpha * tw * 0.5;
+      ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(251,191,36,0.1)';
+      ctx.globalAlpha = alpha * tw * 0.6;
       ctx.fill();
     }
     ctx.globalAlpha = 1;
@@ -649,6 +729,7 @@ function initBalloons() {
       if (b.classList.contains('popped')) return;
       b.classList.add('popped'); popped++;
       counterEl.textContent = popped;
+      playPopSound();
 
       const rect = b.getBoundingClientRect();
       const cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
